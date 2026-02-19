@@ -191,7 +191,7 @@ impl PlayerCtl {
     ///
     /// Will panic if playerctl returns an invalid status.
     #[must_use]
-    #[deprecated = "Use status_opt"]
+    #[deprecated = "Use status_res"]
     pub fn status() -> PlayerStatus {
         command("playerctl status")
             .trim()
@@ -202,7 +202,7 @@ impl PlayerCtl {
     /// Gets the current playerctl status.
     /// Returns an error if playerctl returns an invalid status.
     #[must_use]
-    pub fn status_opt() -> Result<PlayerStatus, String> {
+    pub fn status_res() -> Result<PlayerStatus, String> {
         command("playerctl status")
             .trim()
             .parse()
@@ -236,7 +236,7 @@ impl PlayerCtl {
     ///
     /// Will panic if playerctl returns an invalid status.
     #[must_use]
-    #[deprecated = "Use loop_get_opt"]
+    #[deprecated = "Use loop_get_res"]
     pub fn loop_get() -> LoopStatus {
         command("playerctl loop")
             .trim()
@@ -247,7 +247,7 @@ impl PlayerCtl {
     /// Get the current loop status.
     /// Will return an error instead of panicking if playerctl returns an invalid status.
     #[must_use]
-    pub fn loop_get_opt() -> Result<LoopStatus, String> {
+    pub fn loop_get_res() -> Result<LoopStatus, String> {
         command("playerctl loop")
             .trim()
             .parse()
@@ -265,7 +265,7 @@ impl PlayerCtl {
     ///
     /// Will panic if playerctl returns an invalid status.
     #[must_use]
-    #[deprecated = "Use shuffle_get_opt"]
+    #[deprecated = "Use shuffle_get_res"]
     pub fn shuffle_get() -> ShuffleStatus {
         command("playerctl shuffle")
             .trim()
@@ -276,7 +276,7 @@ impl PlayerCtl {
     /// Get the current shuffle status.
     /// Will return an error if playerctl returns invalid status.
     #[must_use]
-    pub fn shuffle_get_opt() -> Result<ShuffleStatus, String> {
+    pub fn shuffle_get_res() -> Result<ShuffleStatus, String> {
         command("playerctl shuffle")
             .trim()
             .parse()
