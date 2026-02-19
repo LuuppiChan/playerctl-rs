@@ -44,13 +44,14 @@ fn command(command: &str) -> String {
 }
 
 /// The current state of the player.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum PlayerStatus {
     /// Media is currently playing.
     Playing,
     /// Media is currently paused.
     Paused,
     /// Media is currently stopped.
+    #[default]
     Stopped,
 }
 
@@ -68,9 +69,10 @@ impl FromStr for PlayerStatus {
 }
 
 /// The player's looping state.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum LoopStatus {
     /// Media is not looping.
+    #[default]
     None,
     /// The current track will loop.
     Track,
@@ -92,11 +94,12 @@ impl FromStr for LoopStatus {
 }
 
 /// The player's shuffle state to set.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub enum ShuffleStatus {
     /// Media will be shuffled.
     On,
     /// Media will not be shuffled.
+    #[default]
     Off,
     /// The shuffle status will be toggled.
     Toggle,
@@ -118,6 +121,7 @@ impl FromStr for ShuffleStatus {
 /// The currently playing track's metadata.
 ///
 /// If any of the metadata is not available, that field will be an empty string.
+#[derive(Debug, Default, PartialEq, Eq, PartialOrd, Ord, Clone)]
 pub struct TrackMetadata {
     /// The track's artist.
     pub artist: String,
@@ -187,11 +191,22 @@ impl PlayerCtl {
     ///
     /// Will panic if playerctl returns an invalid status.
     #[must_use]
+    #[deprecated = "Use status_opt"]
     pub fn status() -> PlayerStatus {
         command("playerctl status")
             .trim()
             .parse()
             .expect("Failed to parse player status")
+    }
+
+    /// Gets the current playerctl status.
+    /// Returns an error if playerctl returns an invalid status.
+    #[must_use]
+    pub fn status_opt() -> Result<PlayerStatus, String> {
+        command("playerctl status")
+            .trim()
+            .parse()
+            .map_err(|_e| "Failed to parse player status".to_string())
     }
 
     /// Get the metadata of the currently playing track.
@@ -221,11 +236,22 @@ impl PlayerCtl {
     ///
     /// Will panic if playerctl returns an invalid status.
     #[must_use]
+    #[deprecated = "Use loop_get_opt"]
     pub fn loop_get() -> LoopStatus {
         command("playerctl loop")
             .trim()
             .parse()
             .expect("Failed to parse loop status")
+    }
+
+    /// Get the current loop status.
+    /// Will return an error instead of panicking if playerctl returns an invalid status.
+    #[must_use]
+    pub fn loop_get_opt() -> Result<LoopStatus, String> {
+        command("playerctl loop")
+            .trim()
+            .parse()
+            .map_err(|_e| "Failed to parse loop status".to_string())
     }
 
     /// Set the loop status.
@@ -239,11 +265,22 @@ impl PlayerCtl {
     ///
     /// Will panic if playerctl returns an invalid status.
     #[must_use]
+    #[deprecated = "Use shuffle_get_opt"]
     pub fn shuffle_get() -> ShuffleStatus {
         command("playerctl shuffle")
             .trim()
             .parse()
             .expect("Failed to parse shuffle status")
+    }
+
+    /// Get the current shuffle status.
+    /// Will return an error if playerctl returns invalid status.
+    #[must_use]
+    pub fn shuffle_get_opt() -> Result<ShuffleStatus, String> {
+        command("playerctl shuffle")
+            .trim()
+            .parse()
+            .map_err(|_e| "Failed to parse shuffle status".to_string())
     }
 
     /// Set the shuffle status.
