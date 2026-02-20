@@ -37,7 +37,17 @@ fn command(command: &str) -> String {
     let stdout = Command::new(parts.remove(0))
         .args(parts)
         .output()
-        .unwrap_or_else(|_| panic!("Failed to execute command '{}'", command))
+        .unwrap_or_else(|_| {
+            panic!(
+                "Failed to execute command '{}'{}",
+                command,
+                if command.contains("playerctl") {
+                    " Is playerctl installed?"
+                } else {
+                    ""
+                }
+            )
+        })
         .stdout;
 
     String::from_utf8(stdout).expect("Stdout was not valid UTF-8")
